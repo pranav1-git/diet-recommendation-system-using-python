@@ -1,2 +1,2 @@
-Age	Height (cm)	Weight (kg)	BMI	Diet Type	Diet Preference	Health Condition	Fitness Goal
-							
+Age,Height (cm),Weight (kg),BMI,Diet Type,Diet Preference,Health Condition,Fitness Goal
+20,170,60,20.76,All,High-Protein,None,Muscle Gain

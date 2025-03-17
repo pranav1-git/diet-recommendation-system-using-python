@@ -1,7 +1,7 @@
 Food_items,Category,Calories,Fats,Protein (g),Iron,Carbohydrates,Fibre,Sugars,Meal Type,Diet Preferences,Health Conditions
 Asparagus Cooked,Veg,22,0.2,2.4,0.91,4.1,2,1.3,Dinner,"Low-Carbs, Low-Fat","Hypertension, Type 2 Diabetes"
 Avocados,Veg,160,15,2,0.55,8.5,6.7,0.7,Any,"Mediterranean, Low-Sugar","High Cholesterol, Hypertension"
-Bananas,Veg,89,0.3,1.1,0.26,23,2.6,12,Breakfast,None,Hypertension (high potassium)
+Bananas,Veg,89,0.3,1.1,0.26,23,2.6,12,Breakfast,None,Hypertension
 Bagels made in wheat,Veg,250,1.5,10,2.76,49,4.1,6.1,Breakfast,None,None
 Berries,Veg,349,0.4,14,6.8,77,13,46,Any,"Low-Sugar, Low-Fat","Type 2 Diabetes, High Cholesterol"
 Brocolli,Veg,25,0.5,3.8,1.27,3.1,2.8,0.6,"Lunch, Dinner","Low-Carbs, Low-Fat","Type 2 Diabetes, Hypertension"
@@ -88,6 +88,3 @@ Strawberry Icecream,Veg,192,8.4,3.2,0.21,28,0.9,0,Any,None,None
 Marshmallows,Veg,318,0.2,1.8,0.23,81,0.1,58,Snack,None,None
 Chocolate milk,Veg,535,30,7.7,2.35,59,3.4,52,Snack,None,None
 Rice Pudding,Veg,376,0.1,2.7,1.79,91,0.7,0,Any,None,None
-,,,,,,,,,,,
-,,,,,,,,,,,
-,,,,,,,,,,,

@@ -3,6 +3,215 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import font
 from PIL import Image, ImageTk
+import csv
+import os
+import pandas as pd
+
+
+def get_output():
+    """
+    Reads user input values and food_data.csv,
+    then filters and generates a personalized meal plan as a dictionary with keys:
+    "breakfast", "lunch", "snack", "dinner".
+    """
+    # Retrieve user inputs from the GUI
+    user_age = age_entry.get()
+    user_height = height_entry.get()
+    user_weight = weight_entry.get()
+    user_bmi_text = bmi_label.cget("text")
+    user_diet_type = diet_type.get()  # "All", "Veg", or "Non-Veg"
+    user_diet_preference = (
+        diet_type_preference.get()
+    )  # e.g., "High-Protein", "Low-Carbs", etc.
+    user_health_condition = (
+        diet_type_health_conditions.get()
+    )  # e.g., "None", "Hypertension", etc.
+    user_diet_goal = (
+        selected_goal if selected_goal else "None"
+    )  # "Weight Loss", "Muscle Gain", "Healthy"
+
+    # Basic validation: Ensure required fields are not empty.
+    if not (user_age and user_height and user_weight and user_bmi_text):
+        messagebox.showwarning("Input Error", "Please fill in all the required fields!")
+        return
+
+    try:
+        # Optionally convert BMI text to float (if needed for further calculations)
+        user_bmi = float(user_bmi_text)
+    except ValueError:
+        user_bmi = None
+
+    # Load the food_data.csv file
+    try:
+        df = pd.read_csv("food_data.csv")
+    except Exception as e:
+        messagebox.showerror("File Error", f"Error reading food_data.csv: {e}")
+        return
+
+    # Initialize the meal plan dictionary
+    meal_plan = {"breakfast": [], "lunch": [], "snack": [], "dinner": []}
+
+    # Helper function: Check if a cell's value contains a target (splitting on commas, case-insensitive)
+    def contains_value(cell_value, target):
+        if pd.isna(cell_value):
+            return False
+        parts = [part.strip().lower() for part in str(cell_value).split(",")]
+        return target.lower() in parts
+
+    # For each meal category, filter food items accordingly
+    for meal in meal_plan.keys():
+        # Filter rows where "Meal Type" contains the current meal or "Any"
+        df_meal = df[
+            df["Meal Type"].apply(
+                lambda x: contains_value(x, meal) or contains_value(x, "Any")
+            )
+        ]
+
+        # Filter by Diet Type: if user selects "All", include both Veg and Non-Veg; otherwise, filter accordingly.
+        if user_diet_type == "All":
+            # No filtering; recommendations will include items from both Veg and Non-Veg categories.
+            pass
+        else:
+            df_meal = df_meal[df_meal["Category"].str.lower() == user_diet_type.lower()]
+
+        # Filter by Diet Preference if a specific preference is chosen (i.e., not "None")
+        if user_diet_preference != "None":
+            df_meal = df_meal[
+                df_meal["Diet Preferences"].apply(
+                    lambda x: contains_value(x, user_diet_preference)
+                )
+            ]
+
+        # Filter by Health Condition if a specific condition is chosen (i.e., not "None")
+        if user_health_condition != "None":
+            df_meal = df_meal[
+                df_meal["Health Conditions"].apply(
+                    lambda x: contains_value(x, user_health_condition)
+                )
+            ]
+
+        # For Fitness Goal: Adjust sorting
+        # if user_diet_goal == "Weight Loss":
+        #     # For weight loss, sort by low calories first
+        #     df_meal = df_meal.sort_values("Calories", ascending=True)
+        # elif user_diet_goal == "Muscle Gain":
+        #     # For muscle gain, sort by high protein content
+        #     df_meal = df_meal.sort_values("Protein (g)", ascending=False)
+        # else:
+        #     # For "Healthy" or if no specific goal, sort by Calories ascending
+        #     df_meal = df_meal.sort_values("Calories", ascending=True)
+
+        # # Select top 3 recommendations (if available) for the current meal category
+        # recommended_foods = df_meal["Food_items"].head(5).tolist()
+        # meal_plan[meal] = recommended_foods
+
+        # if user_diet_goal == "Weight Loss":
+        #     # For weight loss, sort by low Calories; also filter out very high-calorie foods if BMI > 25
+        #     df_meal = df_meal.sort_values("Calories", ascending=True)
+        #     if user_bmi > 25:
+        #         df_meal = df_meal[df_meal["Calories"] < 250]
+        # elif user_diet_goal == "Muscle Gain":
+        #     # For muscle gain, sort by high Protein content
+        #     df_meal = df_meal.sort_values("Protein (g)", ascending=False)
+        # else:
+        #     # For "Healthy" or no specific goal, sort by Calories ascending
+        #     df_meal = df_meal.sort_values("Calories", ascending=True)
+
+        # # Select top 3 food items (if available) for the current meal
+        # recommended_foods = df_meal["Food_items"].head(5).tolist()
+        # meal_plan[meal] = recommended_foods
+
+        if user_diet_goal == "Weight Loss":
+            # Sort by low Calories (priority for weight loss)
+            df_meal = df_meal.sort_values("Calories", ascending=True)
+
+            # If BMI > 25 (overweight/obese), filter out high-calorie foods
+            if user_bmi > 25:
+                df_meal = df_meal[df_meal["Calories"] < 250]
+
+            # If BMI ≤ 18.5 (underweight), avoid very low-calorie meals
+            elif user_bmi <= 18.5:
+                df_meal = df_meal[df_meal["Calories"] > 200]
+
+        elif user_diet_goal == "Muscle Gain":
+            # Sort by high Protein (muscle-building priority)
+            df_meal = df_meal.sort_values("Protein (g)", ascending=False)
+
+            # If BMI < 18.5 (underweight), recommend higher-calorie protein foods
+            if user_bmi < 18.5:
+                df_meal = df_meal[df_meal["Calories"] > 350]
+
+        elif user_diet_goal == "Healthy":
+            # General health-conscious sorting (low Calories + balanced macros)
+            df_meal = df_meal.sort_values("Calories", ascending=True)
+
+        # Select top 3 food items for the meal
+        recommended_foods = df_meal["Food_items"].head(5).tolist()
+        meal_plan[meal] = recommended_foods
+
+    # Print the output dictionary to the console and show it via a messagebox
+    print("Recommended Meal Plan:")
+    print(f"BreakFast : {meal_plan['breakfast']}")
+    print(f"Lunch : {meal_plan['lunch']}")
+    print(f"Snack : {meal_plan['snack']}")
+    print(f"Dinner : {meal_plan['dinner']}")
+    print()
+    print()
+
+
+# // function that saves the values of user input
+# def save_user_data():
+#     """Saves user input values to user_data.csv"""
+
+#     if age_entry.get() != "" and user_height != "" and user_weight != "":
+
+#         user_age = age_entry.get()
+#         user_height = height_entry.get()
+#         user_weight = weight_entry.get()
+#         user_bmi = bmi_label.cget("text")  # Get displayed BMI text
+#         user_diet_type = diet_type.get()
+#         user_diet_type_preference = diet_type_preference.get()
+#         user_health_condition = diet_type_health_conditions.get()
+#         user_diet_goal = selected_goal if selected_goal else "None"
+
+#         # Define CSV file path
+#         csv_file = "user_data.csv"
+#         file_exists = os.path.isfile(csv_file)
+
+#         # Open CSV file in append mode
+#         with open(csv_file, mode="a", newline="") as file:
+#             writer = csv.writer(file)
+
+#             # Write header if file does not exist
+#             if not file_exists:
+#                 writer.writerow(
+#                     [
+#                         "Age",
+#                         "Height",
+#                         "Weight",
+#                         "BMI",
+#                         "Diet Type",
+#                         "Diet Preference",
+#                         "Health Condition",
+#                         "Diet Goal",
+#                     ]
+#                 )
+
+#             # Write user data
+#             writer.writerow(
+#                 [
+#                     user_age if user_age != "" else "None",
+#                     user_height if user_height != "" else "None",
+#                     user_weight if user_weight != "" else "None",
+#                     user_bmi,
+#                     user_diet_type,
+#                     user_diet_type_preference,
+#                     user_health_condition,
+#                     user_diet_goal,
+#                 ]
+#             )
+
+#         print("User data saved successfully!")
 
 
 # function that opens app at the center
@@ -46,9 +255,9 @@ def calculate_bmi():
         height = float(height_entry.get()) / 100  # Convert cm to meters
         weight = float(weight_entry.get())
         bmi = weight / (height**2)
-        bmi_label.config(text=f"BMI: {bmi:.2f}")
+        bmi_label.config(text=f"{bmi:.2f}")
     except ValueError:
-        bmi_label.config(text="BMI: -")
+        bmi_label.config(text="")
 
 
 root = tk.Tk()
@@ -219,7 +428,6 @@ diet_type_preference = ttk.Combobox(
         "Low-Carbs",
         "Low-Sugar",
         "Low-Fat",
-        "Mediterranean ",
     ],
     state="readonly",
     font=(app_font_family, app_font_size),
@@ -374,11 +582,21 @@ test_button = tk.Button(
     font=(app_font_family, app_label_fsize),
     bg=app_text_bg,
     text="SEE INPUTS",
-    command=get_user_inputs,
+    command=get_output,
     width=16,
     pady=3,
     border=0,
 )
+# test_button = tk.Button(
+#     root,
+#     font=(app_font_family, app_label_fsize),
+#     bg=app_text_bg,
+#     text="SEE INPUTS",
+#     command=get_user_inputs,
+#     width=16,
+#     pady=3,
+#     border=0,
+# )
 test_button.place(x=x_value, y=620)
 
 
