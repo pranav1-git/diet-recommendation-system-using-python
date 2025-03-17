@@ -5,6 +5,7 @@ from tkinter import font
 from PIL import Image, ImageTk
 
 
+# function that opens app at the center
 def center_window(window, width, height):
     """
     Center the Tkinter window on the screen.
@@ -64,6 +65,7 @@ app_label_fsize = 12
 app_font_family = "Arial"
 root.configure(bg=app_bg)
 
+
 # Center the window
 center_window(root, window_width, window_height)
 
@@ -86,7 +88,7 @@ external_img = Image.open("diet-bg-image.jpg")  # Replace with your image
 bg_photo = ImageTk.PhotoImage(external_img)
 bg_label = tk.Label(root, image=bg_photo, border=0)
 # bg_label.place(x=350, y=170, relwidth=0.6, relheight=0.6)
-bg_label.place(x=380, y=140, relwidth=0.7, relheight=0.7)
+# bg_label.place(x=380, y=140, relwidth=0.7, relheight=0.7)
 root.bind("<Configure>", resize_bg)
 
 
@@ -122,7 +124,7 @@ title_label = tk.Label(
     text="DIETIFY",
     font=(app_font_family, 32, "bold"),
     bg=app_bg,
-    fg=app_text_bg,
+    fg="white",
     border=0,
 )
 title_label.place(x=x_value, y=33)
@@ -151,6 +153,7 @@ age_label.place(x=x_value, y=170)
 age_entry = tk.Entry(
     root,
     font=(app_font_family, app_font_size),
+    bg="white",
     validate="key",
     validatecommand=(validate_age, "%P"),
     border=0,
@@ -170,7 +173,7 @@ diet_type_label = tk.Label(
 diet_type_label.place(x=330, y=170)
 diet_type = ttk.Combobox(
     root,
-    values=["Veg", "Non-Veg"],
+    values=["All", "Veg", "Non-Veg"],
     state="readonly",
     font=(app_font_family, app_font_size),
 )
@@ -198,6 +201,33 @@ height_entry = tk.Entry(
 height_entry.place(x=x_value, y=280)
 
 
+# managing diet perferences
+diet_preferences = tk.Label(
+    root,
+    text="DIET PREFERENCES",
+    font=(app_font_family, app_label_fsize),
+    bg=app_bg,
+    fg="white",
+    border=0,
+)
+diet_preferences.place(x=330, y=250)
+diet_type_preference = ttk.Combobox(
+    root,
+    values=[
+        "None",
+        "High-Protein",
+        "Low-Carbs",
+        "Low-Sugar",
+        "Low-Fat",
+        "Mediterranean ",
+    ],
+    state="readonly",
+    font=(app_font_family, app_font_size),
+)
+diet_type_preference.place(x=330, y=280)
+diet_type_preference.current(0)
+
+
 # Weight Field
 weight_label = tk.Label(
     root,
@@ -216,6 +246,32 @@ weight_entry = tk.Entry(
     border=0,
 )
 weight_entry.place(x=x_value, y=363)
+
+
+# managing user health conditions
+health_condiiton = tk.Label(
+    root,
+    text="HEALTH CONDITIONS",
+    font=(app_font_family, app_label_fsize),
+    bg=app_bg,
+    fg="white",
+    border=0,
+)
+health_condiiton.place(x=330, y=330)
+diet_type_health_conditions = ttk.Combobox(
+    root,
+    values=[
+        "None",
+        "High cholesterol",
+        "Type 2 Diabetes",
+        "Hypertension",
+        "Mediterranean ",
+    ],
+    state="readonly",
+    font=(app_font_family, app_font_size),
+)
+diet_type_health_conditions.place(x=330, y=363)
+diet_type_health_conditions.current(0)
 
 
 # Bind KeyRelease events to calculate BMI
@@ -242,14 +298,14 @@ bmi_label.place(x=x_value, y=423)
 selected_goal = None
 goal_label = tk.Label(
     root,
-    text="DIET GOAL",
+    text="FITNESS GOAL",
     font=(app_font_family, app_label_fsize),
     bg=app_bg,
     fg="white",
     border=0,
 )
 goal_label.place(x=x_value, y=515)
-goals = ["Weight Loss", "Weight Gain", "Healthy"]
+goals = ["Weight Loss", "Muscle Gain", "Healthy"]
 
 
 goal_buttons = []
@@ -295,6 +351,8 @@ def get_user_inputs():
         user_weight = weight_entry.get()
         user_bmi = bmi_label.cget("text")  # Get displayed BMI text
         user_diet_type = diet_type.get()
+        user_diet__type_preference = diet_type_preference.get()
+        user_health_condition = diet_type_health_conditions.get()
         user_diet_goal = selected_goal if selected_goal else "None"
 
         print("User Inputs:")
@@ -303,7 +361,9 @@ def get_user_inputs():
         print("Weight:", user_weight)
         print("BMI:", user_bmi)
         print("Diet Type:", user_diet_type)
-        print("Diet Goal:", user_diet_goal)
+        print("Fitness Goal:", user_diet_goal)
+        print("Diet Preferences:", user_diet__type_preference)
+        print("Health Conditions:", user_health_condition)
     except Exception as e:
         print("Error retrieving user inputs:", e)
 
@@ -320,5 +380,6 @@ test_button = tk.Button(
     border=0,
 )
 test_button.place(x=x_value, y=620)
+
 
 root.mainloop()
