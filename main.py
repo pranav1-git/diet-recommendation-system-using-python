@@ -1,10 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from tkinter import font
 from PIL import Image, ImageTk
-import csv
-import os
 import pandas as pd
 
 
@@ -90,37 +87,6 @@ def get_output():
                 )
             ]
 
-        # For Fitness Goal: Adjust sorting
-        # if user_diet_goal == "Weight Loss":
-        #     # For weight loss, sort by low calories first
-        #     df_meal = df_meal.sort_values("Calories", ascending=True)
-        # elif user_diet_goal == "Muscle Gain":
-        #     # For muscle gain, sort by high protein content
-        #     df_meal = df_meal.sort_values("Protein (g)", ascending=False)
-        # else:
-        #     # For "Healthy" or if no specific goal, sort by Calories ascending
-        #     df_meal = df_meal.sort_values("Calories", ascending=True)
-
-        # # Select top 3 recommendations (if available) for the current meal category
-        # recommended_foods = df_meal["Food_items"].head(5).tolist()
-        # meal_plan[meal] = recommended_foods
-
-        # if user_diet_goal == "Weight Loss":
-        #     # For weight loss, sort by low Calories; also filter out very high-calorie foods if BMI > 25
-        #     df_meal = df_meal.sort_values("Calories", ascending=True)
-        #     if user_bmi > 25:
-        #         df_meal = df_meal[df_meal["Calories"] < 250]
-        # elif user_diet_goal == "Muscle Gain":
-        #     # For muscle gain, sort by high Protein content
-        #     df_meal = df_meal.sort_values("Protein (g)", ascending=False)
-        # else:
-        #     # For "Healthy" or no specific goal, sort by Calories ascending
-        #     df_meal = df_meal.sort_values("Calories", ascending=True)
-
-        # # Select top 3 food items (if available) for the current meal
-        # recommended_foods = df_meal["Food_items"].head(5).tolist()
-        # meal_plan[meal] = recommended_foods
-
         if user_diet_goal == "Weight Loss":
             # Sort by low Calories (priority for weight loss)
             df_meal = df_meal.sort_values("Calories", ascending=True)
@@ -158,60 +124,157 @@ def get_output():
     print()
     print()
 
+    def show_output_popup():
+        output_window = tk.Toplevel(root, bg=app_bg)
+        output_window.title("Meal Plan Recommendation")
+        top_level_width = 1300
+        top_level_height = 590
+        output_window.geometry(f"{top_level_width}x{top_level_height}")
+        title_label = tk.Label(
+            output_window,
+            text="DIETIFY",
+            font=(app_font_family, 32, "bold"),
+            bg=app_bg,
+            fg="white",
+            border=0,
+        )
+        title_label.place(x=x_value, y=33)
+        project_name_label = tk.Label(
+            output_window,
+            text="PERSONALIZED DIET RECOMMENDATION SYSTEM",
+            font=(app_font_family, app_font_size),
+            bg=app_text_bg,
+            pady=7,
+            padx=15,
+            border=0,
+        )
+        project_name_label.place(x=x_value, y=95)
+        breakfast_label = tk.Label(
+            output_window,
+            text="Breakfast",
+            font=(app_font_family, 18),
+            bg=app_bg,
+            fg="white",
+            border=0,
+        )
+        breakfast_label.place(x=x_value, y=180)
+        breakfast_label = tk.Label(
+            output_window,
+            text="Breakfast",
+            font=(app_font_family, 19),
+            bg=app_bg,
+            fg="white",
+            border=0,
+        )
+        breakfast_label.place(x=x_value, y=180)
+        frame_inside_ow = tk.Frame(
+            output_window,
+            bg=app_text_bg,
+            border=0,
+            pady=10,
+        )
+        frame_inside_ow.place(x=x_value, y=230, height=250)
+        for meal in meal_plan["breakfast"]:
+            each_meal_label = tk.Label(
+                frame_inside_ow,
+                text=meal.capitalize(),
+                font=(app_bg, 14),
+                bg=app_text_bg,
+                fg="#2b3b0f",
+                border=0,
+                padx=5,  # Adjust padding
+                pady=5,  # Adjust padding
+            )
+            each_meal_label.pack(anchor="w", padx=15)  # Align text to the left
+            # /////////
+        lunch_label = tk.Label(
+            output_window,
+            text="Lunch",
+            font=(app_font_family, 19),
+            bg=app_bg,
+            fg="white",
+            border=0,
+        )
+        lunch_label.place(x=280, y=180)
+        frame_inside_ow = tk.Frame(
+            output_window,
+            bg=app_text_bg,
+            border=0,
+            pady=10,
+        )
+        frame_inside_ow.place(x=280, y=230, height=250)
+        for meal in meal_plan["lunch"]:
+            each_meal_label = tk.Label(
+                frame_inside_ow,
+                text=meal.capitalize(),
+                font=(app_bg, 14),
+                bg=app_text_bg,
+                fg="#2b3b0f",
+                border=0,
+                padx=5,  # Adjust padding
+                pady=5,  # Adjust padding
+            )
+            each_meal_label.pack(anchor="w", padx=15)
+        # /////////
+        snack_label = tk.Label(
+            output_window,
+            text="Snack",
+            font=(app_font_family, 19),
+            bg=app_bg,
+            fg="white",
+            border=0,
+        )
+        snack_label.place(x=580, y=180)
+        frame_inside_ow = tk.Frame(
+            output_window,
+            bg=app_text_bg,
+            border=0,
+            pady=10,
+        )
+        frame_inside_ow.place(x=580, y=230, height=250)
+        for meal in meal_plan["snack"]:
+            each_meal_label = tk.Label(
+                frame_inside_ow,
+                text=meal.capitalize(),
+                font=(app_bg, 14),
+                bg=app_text_bg,
+                fg="#2b3b0f",
+                border=0,
+                padx=5,  # Adjust padding
+                pady=5,  # Adjust padding
+            )
+            each_meal_label.pack(anchor="w", padx=15)
+        # ///////////////
+        dinner_label = tk.Label(
+            output_window,
+            text="Dinner",
+            font=(app_font_family, 19),
+            bg=app_bg,
+            fg="white",
+            border=0,
+        )
+        dinner_label.place(x=800, y=180)
+        frame_inside_ow = tk.Frame(
+            output_window,
+            bg=app_text_bg,
+            border=0,
+            pady=10,
+        )
+        frame_inside_ow.place(x=800, y=230, height=250)
+        for meal in meal_plan["dinner"]:
+            each_meal_label = tk.Label(
+                frame_inside_ow,
+                text=meal.capitalize(),
+                font=(app_bg, 14),
+                bg=app_text_bg,
+                fg="#2b3b0f",
+                border=0,
+                padx=5,  # Adjust padding
+                pady=5,  # Adjust padding
+            )
+            each_meal_label.pack(anchor="w", padx=15)
 
-# // function that saves the values of user input
-# def save_user_data():
-#     """Saves user input values to user_data.csv"""
-
-#     if age_entry.get() != "" and user_height != "" and user_weight != "":
-
-#         user_age = age_entry.get()
-#         user_height = height_entry.get()
-#         user_weight = weight_entry.get()
-#         user_bmi = bmi_label.cget("text")  # Get displayed BMI text
-#         user_diet_type = diet_type.get()
-#         user_diet_type_preference = diet_type_preference.get()
-#         user_health_condition = diet_type_health_conditions.get()
-#         user_diet_goal = selected_goal if selected_goal else "None"
-
-#         # Define CSV file path
-#         csv_file = "user_data.csv"
-#         file_exists = os.path.isfile(csv_file)
-
-#         # Open CSV file in append mode
-#         with open(csv_file, mode="a", newline="") as file:
-#             writer = csv.writer(file)
-
-#             # Write header if file does not exist
-#             if not file_exists:
-#                 writer.writerow(
-#                     [
-#                         "Age",
-#                         "Height",
-#                         "Weight",
-#                         "BMI",
-#                         "Diet Type",
-#                         "Diet Preference",
-#                         "Health Condition",
-#                         "Diet Goal",
-#                     ]
-#                 )
-
-#             # Write user data
-#             writer.writerow(
-#                 [
-#                     user_age if user_age != "" else "None",
-#                     user_height if user_height != "" else "None",
-#                     user_weight if user_weight != "" else "None",
-#                     user_bmi,
-#                     user_diet_type,
-#                     user_diet_type_preference,
-#                     user_health_condition,
-#                     user_diet_goal,
-#                 ]
-#             )
-
-#         print("User data saved successfully!")
+    show_output_popup()
 
 
 # function that opens app at the center
@@ -274,6 +337,10 @@ app_label_fsize = 12
 app_font_family = "Arial"
 root.configure(bg=app_bg)
 
+padx_value = 30
+pady_value = 3
+x_value = 60
+
 
 # Center the window
 center_window(root, window_width, window_height)
@@ -297,7 +364,7 @@ external_img = Image.open("diet-bg-image.jpg")  # Replace with your image
 bg_photo = ImageTk.PhotoImage(external_img)
 bg_label = tk.Label(root, image=bg_photo, border=0)
 # bg_label.place(x=350, y=170, relwidth=0.6, relheight=0.6)
-# bg_label.place(x=380, y=140, relwidth=0.7, relheight=0.7)
+bg_label.place(x=480, y=370, relwidth=0.5, relheight=0.5)
 root.bind("<Configure>", resize_bg)
 
 
@@ -322,10 +389,6 @@ validate_age = root.register(lambda new_value: validate_input(new_value, "age"))
 validate_height = root.register(lambda new_value: validate_input(new_value, "height"))
 validate_weight = root.register(lambda new_value: validate_input(new_value, "weight"))
 
-
-padx_value = 30
-pady_value = 3
-x_value = 60
 
 # GUI ka starting
 title_label = tk.Label(
@@ -488,6 +551,15 @@ weight_entry.bind("<KeyRelease>", lambda event: calculate_bmi())
 
 
 # managing bmi
+bmi_text_label = tk.Label(
+    root,
+    text="BMI",
+    font=(app_font_family, app_label_fsize),
+    bg=app_bg,
+    fg="white",
+    border=0,
+)
+bmi_text_label.place(x=x_value, y=410)
 bmi_label = tk.Label(
     root,
     text="BMI : ",
@@ -499,7 +571,7 @@ bmi_label = tk.Label(
     pady=1,
     border=0,
 )
-bmi_label.place(x=x_value, y=423)
+bmi_label.place(x=x_value, y=440)
 
 
 # managing goal
@@ -512,13 +584,13 @@ goal_label = tk.Label(
     fg="white",
     border=0,
 )
-goal_label.place(x=x_value, y=515)
+goal_label.place(x=x_value, y=490)
 goals = ["Weight Loss", "Muscle Gain", "Healthy"]
 
 
 goal_buttons = []
 frame = tk.Frame(root, bg=app_bg, border=0)
-frame.place(x=x_value, y=550)
+frame.place(x=x_value, y=520)
 
 for goal in goals:
     btn = tk.Button(
@@ -581,23 +653,13 @@ test_button = tk.Button(
     root,
     font=(app_font_family, app_label_fsize),
     bg=app_text_bg,
-    text="SEE INPUTS",
+    text="OUTPUT",
     command=get_output,
     width=16,
     pady=3,
     border=0,
 )
-# test_button = tk.Button(
-#     root,
-#     font=(app_font_family, app_label_fsize),
-#     bg=app_text_bg,
-#     text="SEE INPUTS",
-#     command=get_user_inputs,
-#     width=16,
-#     pady=3,
-#     border=0,
-# )
-test_button.place(x=x_value, y=620)
+test_button.place(x=x_value, y=590)
 
 
 root.mainloop()

@@ -7,7 +7,7 @@ Berries,Veg,349,0.4,14,6.8,77,13,46,Any,"Low-Sugar, Low-Fat","Type 2 Diabetes, H
 Brocolli,Veg,25,0.5,3.8,1.27,3.1,2.8,0.6,"Lunch, Dinner","Low-Carbs, Low-Fat","Type 2 Diabetes, Hypertension"
 Brown Rice,Veg,362,2.7,7.5,1.8,76,3.4,0,Dinner,Low-Fat,None
 Cauliflower,Veg,32,0.3,3,0.72,6.3,3.3,0,"Lunch, Dinner","Low-Carbs, Low-Fat","Type 2 Diabetes, IBS"
-American cheese,Veg,331,24,20,0.84,8.3,0,0,Any,High-Protein,None
+cheese,Veg,331,24,20,0.84,8.3,0,0,Any,High-Protein,None
 Coffee,Veg,2,0,0.3,0.02,0.2,0,0,Breakfast,Low-Calorie,None
 Corn,Veg,97,1.4,3.3,0.55,22,2.7,7.7,"Lunch, Dinner",None,None
 Dark chocolates,Veg,556,32,5.5,2.13,60,6.5,48,Snack,Low-Sugar,High Cholesterol
@@ -22,7 +22,7 @@ Peas,Veg,81,0.4,5.4,1.47,14,5.7,5.7,"Lunch, Dinner",None,Type 2 Diabetes
 Protein Powder,Veg,411,17,46,8.57,19,7.1,5.7,Any,High-Protein,None
 Pumpkin,Veg,18,0.1,0.7,0.57,4.3,1.1,2.1,"Lunch, Dinner","Low-Carbs, Low-Fat","Type 2 Diabetes, Hypertension"
 Tuna Salad,Non-Veg,187,9.3,16,1,9.4,0,0,"Lunch, Dinner","High-Protein, Low-Carbs","High Cholesterol, Type 2 Diabetes"
-Tuna Fish,Non-Veg,184,6.3,30,1.31,0,0,0,"Lunch, Dinner","High-Protein, Low-Carbs","High Cholesterol, Type 2 Diabetes"
+Fish,Non-Veg,184,6.3,30,1.31,0,0,0,"Lunch, Dinner","High-Protein, Low-Carbs","High Cholesterol, Type 2 Diabetes"
 Peproni Pizza,Veg,298,14,12,2.14,30,1.8,3.2,Dinner,None,None
 Cheese Pizza,Veg,276,11,11,2.47,33,2.1,2.5,Snack,None,None
 French Fries,Veg,289,14,3.5,0.91,37,3.9,0.3,Snack,None,None
@@ -66,7 +66,6 @@ Apples,Veg,52,0.2,0.3,0.12,14,24,10,Snack,Low-Fat,Type 2 Diabetes
 Strawberries,Veg,32,0.3,0.7,0.41,7.7,2,4.9,Snack,"Low-Sugar, Low-Fat","Type 2 Diabetes, High Cholesterol"
 Quinoa,Veg,120,1.9,4.4,1.49,21,2.8,0.9,"Lunch, Dinner","High-Protein, Low-Carbs","Type 2 Diabetes, High Cholesterol"
 Goat meat,Non-Veg,109,2.3,21,2.83,57,0,0,"Lunch, Dinner",High-Protein,None
-Rabbit meat,Non-Veg,114,2.3,22,3.2,0,0,0,"Lunch, Dinner","High-Protein, Low-Fat",None
 Chicken Strips,Non-Veg,295,15,19,0.72,22,1.1,0.3,"Lunch, Dinner",High-Protein,None
 Steak Fries,Non-Veg,255,13,3.3,0.69,31,3.5,0.9,Snack,None,None
 Mexican Rice,Veg,195,4.9,3.6,1.18,34,1.1,1.4,"Lunch, Dinner",None,None
@@ -79,7 +78,7 @@ Nachos,Veg,350,22,4.3,0.75,35,3.2,2.2,Snack,None,None
 Chicken Popcorn,Non-Veg,351,22,18,1.42,21,1,0,Snack,High-Protein,None
 Turkey cooked,Non-Veg,203,10,27,1.52,0,0,0,"Lunch, Dinner","High-Protein, Low-Fat","High Cholesterol, Type 2 Diabetes"
 Oyster cooked,Non-Veg,159,4,29,4.9,0,0,0,"Lunch, Dinner","High-Protein, Low-Fat",High Cholesterol
-Beef sticks,Non-Veg,550,50,22,3.4,5.4,0,0,Snack,High-Protein,None
+Chicken sticks,Non-Veg,550,50,22,3.4,5.4,0,0,Snack,High-Protein,None
 Banana Chips,Veg,519,34,2.3,1.25,58,7.7,35,Snack,None,None
 Honey,Veg,304,0,0.3,0.42,82,0.2,82,Any,None,None
 Chocolate Icecream,Veg,216,11,3.8,0.93,28,1.2,25,Any,None,None
