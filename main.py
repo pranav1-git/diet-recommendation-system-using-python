@@ -6,11 +6,6 @@ import pandas as pd
 
 
 def get_output():
-    """
-    Reads user input values and food_data.csv,
-    then filters and generates a personalized meal plan as a dictionary with keys:
-    "breakfast", "lunch", "snack", "dinner".
-    """
     # Retrieve user inputs from the GUI
     user_age = age_entry.get()
     user_height = height_entry.get()
