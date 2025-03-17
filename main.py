@@ -265,7 +265,7 @@ diet_type_health_conditions = ttk.Combobox(
         "High cholesterol",
         "Type 2 Diabetes",
         "Hypertension",
-        "Mediterranean ",
+        "IBS",
     ],
     state="readonly",
     font=(app_font_family, app_font_size),
