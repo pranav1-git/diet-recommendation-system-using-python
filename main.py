@@ -116,13 +116,13 @@ def get_output():
         meal_plan[meal] = recommended_foods
 
     # Print the output dictionary to the console and show it via a messagebox
-    print("Recommended Meal Plan:")
-    print(f"BreakFast : {meal_plan['breakfast']}")
-    print(f"Lunch : {meal_plan['lunch']}")
-    print(f"Snack : {meal_plan['snack']}")
-    print(f"Dinner : {meal_plan['dinner']}")
-    print()
-    print()
+    # print("Recommended Meal Plan:")
+    # print(f"BreakFast : {meal_plan['breakfast']}")
+    # print(f"Lunch : {meal_plan['lunch']}")
+    # print(f"Snack : {meal_plan['snack']}")
+    # print(f"Dinner : {meal_plan['dinner']}")
+    # print()
+    # print()
 
     def show_output_popup():
         output_window = tk.Toplevel(root, bg=app_bg)
@@ -195,14 +195,14 @@ def get_output():
             fg="white",
             border=0,
         )
-        lunch_label.place(x=280, y=180)
+        lunch_label.place(x=340, y=180)
         frame_inside_ow = tk.Frame(
             output_window,
             bg=app_text_bg,
             border=0,
             pady=10,
         )
-        frame_inside_ow.place(x=280, y=230, height=250)
+        frame_inside_ow.place(x=340, y=230, height=250)
         for meal in meal_plan["lunch"]:
             each_meal_label = tk.Label(
                 frame_inside_ow,
@@ -224,14 +224,14 @@ def get_output():
             fg="white",
             border=0,
         )
-        snack_label.place(x=580, y=180)
+        snack_label.place(x=620, y=180)
         frame_inside_ow = tk.Frame(
             output_window,
             bg=app_text_bg,
             border=0,
             pady=10,
         )
-        frame_inside_ow.place(x=580, y=230, height=250)
+        frame_inside_ow.place(x=620, y=230, height=250)
         for meal in meal_plan["snack"]:
             each_meal_label = tk.Label(
                 frame_inside_ow,
@@ -253,14 +253,14 @@ def get_output():
             fg="white",
             border=0,
         )
-        dinner_label.place(x=800, y=180)
+        dinner_label.place(x=900, y=180)
         frame_inside_ow = tk.Frame(
             output_window,
             bg=app_text_bg,
             border=0,
             pady=10,
         )
-        frame_inside_ow.place(x=800, y=230, height=250)
+        frame_inside_ow.place(x=900, y=230, height=250)
         for meal in meal_plan["dinner"]:
             each_meal_label = tk.Label(
                 frame_inside_ow,
