@@ -32,6 +32,7 @@ def get_output():
             "Height Value Error", "Please provide height ( in cm ) between 60 and 300"
         )
         return
+
     if int(user_weight) > 500 or int(user_weight) < 30:
         messagebox.showwarning("Age Value Error", "Please provide age between 5 and 80")
         return
@@ -59,15 +60,6 @@ def get_output():
     if user_diet_type != "All":
         df = df[df["Category"].str.lower() == user_diet_type.lower()]
 
-    # Filter based on Diet Preferences
-    if user_diet_preference == "High-Protein":
-        df = df.sort_values("Protein", ascending=False)  # Prioritize high-protein foods
-    elif user_diet_preference == "Keto":
-        df = df.sort_values(
-            "Carbohydrates", ascending=True
-        )  # Prioritize low-carb foods
-        df = df.sort_values("Fats", ascending=False)  # High-fat for keto
-
     # Filter based on Health Condition
     if user_health_condition == "High cholesterol":
         df = df[(df["Fats"] < 15) & (df["Fibre"] > 2) & (df["Sugar"] < 5)]
@@ -76,20 +68,56 @@ def get_output():
     elif user_health_condition == "Hypertension":
         df = df[df["Sodium"] < 400]  # Assuming Sodium column exists
     elif user_health_condition == "Iron Deficiency":
-        df = df[df["Iron"] > 5]
+        df = df[df["Iron"] > 2]
 
     # Filter based on Diet Goal
     if user_diet_goal == "Weight Loss":
-        df = df[(df["Calories"] >= 150) & (df["Calories"] <= 400)]
-        df = df.sort_values(["Fibre", "Protein"], ascending=[False, False])
+        df = df[(df["Calories"] <= 300)]
+        # Filter based on Diet Preferences
+        if user_diet_preference == "High-Protein":
+            df = df.sort_values(
+                "Protein", ascending=False
+            )  # Prioritize high-protein foods
+        elif user_diet_preference == "Keto":
+            df = df.sort_values(
+                "Carbohydrates", ascending=True
+            )  # Prioritize low-carb foods
+            df = df.sort_values("Fats", ascending=False)  # High-fat for keto
+
+        # df = df.sort_values(["Fibre", "Protein"], ascending=[False, False])
+
     elif user_diet_goal == "Muscle Gain":
-        df = df[df["Calories"] >= 200]
-        df = df.sort_values(["Protein", "Fats"], ascending=[False, False])
+        df = df[df["Calories"] >= 300]
+
+        # Filter based on Diet Preferences
+        if user_diet_preference == "High-Protein":
+            df = df.sort_values(
+                "Protein", ascending=False
+            )  # Prioritize high-protein foods
+        elif user_diet_preference == "Keto":
+            df = df.sort_values(
+                "Carbohydrates", ascending=True
+            )  # Prioritize low-carb foods
+            df = df.sort_values("Fats", ascending=False)  # High-fat for keto
+
+        # df = df.sort_values(["Protein", "Fats"], ascending=[False, False])
+
         # if user_bmi < 18.5:  # Underweight: prioritize higher calories
         #         df_meal = df_meal[df_meal["Calories"] > 500]
     elif user_diet_goal == "Healthy":
-        df = df[(df["Calories"] > 250) & (df["Calories"] < 600)]
-        df = df.sort_values(["Fibre", "Protein"], ascending=[False, False])
+        df = df[(df["Calories"] > 100) & (df["Calories"] < 300)]
+        # Filter based on Diet Preferences
+        if user_diet_preference == "High-Protein":
+            df = df.sort_values(
+                "Protein", ascending=False
+            )  # Prioritize high-protein foods
+        elif user_diet_preference == "Keto":
+            df = df.sort_values(
+                "Carbohydrates", ascending=True
+            )  # Prioritize low-carb foods
+            df = df.sort_values("Fats", ascending=False)  # High-fat for keto
+
+        # df = df.sort_values(["Fibre", "Protein"], ascending=[False, False])
 
     # Create meal plan dictionary
     meal_plan = {"breakfast": [], "lunch": [], "snack": [], "dinner": []}

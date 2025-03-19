@@ -5,7 +5,7 @@ Bananas,Veg,89,0.3,1.1,0.26,23,2.6,12,Breakfast,1
 Bagels made in wheat,Veg,250,1.5,10,2.76,49,4.1,6.1,Breakfast,450
 Berries,Veg,349,0.4,14,6.8,77,13,46,Lunch,1
 Brocolli,Veg,25,0.5,3.8,1.27,3.1,2.8,0.6,Lunch,33
-Brown Rice,Veg,362,2.7,7.5,1.8,76,3.4,0,Dinner,5
+Veg Biryani,Veg,362,2.7,7.5,1.8,76,3.4,0,Dinner,5
 Cauliflower,Veg,32,0.3,3,0.72,6.3,3.3,0,Dinner,30
 Bread with Peanut Butter,Veg,331,24,20,0.84,8.3,0,0,Breakfast,175
 Coffee,Veg,2,0,0.3,0.02,0.2,0,0,Breakfast,2
@@ -25,10 +25,10 @@ Tuna Salad,Non-Veg,187,9.3,16,1,9.4,0,0,Lunch,400
 Fish,Non-Veg,184,6.3,30,1.31,0,0,0,Dinner,75
 Pineapple Pizza,Veg,298,14,12,2.14,30,1.8,3.2,Snack,700
 Cheese Pizza,Veg,276,11,11,2.47,33,2.1,2.5,Snack,750
-French Fries,Veg,289,14,3.5,0.91,37,3.9,0.3,Snack,300
+French Fries,Veg,312,14,3.4,0.91,41,3.9,0.3,Snack,210
 Chicken Burger,Non-Veg,292,15,18,0.62,20,1.3,0,Snack,650
 Cheese Burger,Veg,256,12,13,2.78,25,1.4,0,Snack,800
-Chicken Sandwich,Non-Veg,257,12,15,1.32,23,1.2,5,Lunch,600
+Chicken Sandwich,Non-Veg,257,12,15,1.32,23,1.2,5,Breakfast,600
 Sugar Doughnuts,Veg,426,23,5.2,1.06,51,1.5,32,Snack,200
 Chocolate Doughnuts,Veg,452,25,4.9,4,51,1.9,27,Snack,250
 Pop Corn - Caramel,Veg,381,1.4,2,0.8,90,2.5,65,Snack,300
@@ -36,21 +36,20 @@ Pop Corn,Veg,429,9.5,13,2.28,73,14,0.5,Snack,150
 Dosa,Veg,168,3.7,4.5,8,29,0.9,0.1,Breakfast,400
 Idli,Veg,156,1.7,5,17.2,30.2,2.1,0.74,Breakfast,300
 Poha,Veg,130,1.5,2.6,3.16,26.9,1.1,0.5,Breakfast,200
-Chappati,Veg,297,7.5,11,3.01,46,4.9,2.7,"Lunch, Dinner",150
-Tomato Soup,Veg,16,0.2,1.2,0.47,3.2,0.9,2.63,Snack,400
+Two Chappati and dal,Veg,297,7.5,11,3.01,46,4.9,2.7,Lunch,150
+Tomato Soup,Veg,16,0.2,1.2,0.47,3.2,0.9,2,Snack,400
 Yogurt,Veg,60,4,3.1,0.08,7,0,7,Lunch,50
 Brownie,Veg,407,6.2,4.4,3.81,84,2.9,55,Snack,200
 Noodles,Veg,108,0.2,1.8,0.14,24,1,0,Snack,800
 Uttapam,Veg,188,7.2,4.4,24,26.4,2.2,0.24,Breakfast,300
 Dal,Veg,109,8.5,2.1,35.2,6.3,1.5,3.29,Dinner,300
 Almonds,Veg,579,50,21,3.71,22,13,4.4,Snack,1
-Mushrooms,Veg,22,0.3,3.1,0.5,3.3,1,2,"Lunch, Dinner",10
+Mushrooms Vegetable,Veg,22,0.3,3.1,0.5,3.3,1,2,"Lunch, Dinner",10
 Egg Yolk cooked,Non-Veg,196,15,14,1.89,0.8,0,0.4,Breakfast,50
 Sweet Potatoes cooked,Veg,76,0.1,1.4,0.72,18,2.5,5.7,Lunch,50
 Boiled Potatoes,Veg,87,0.1,1.9,0.31,20,2,0.9,Breakfast,5
-White Rice,Veg,360,0.6,6.6,4.36,79,1.4,0,Dinner,1
+1 bowl white rice,Veg,360,0.6,6.6,4.36,79,1.4,0,Dinner,1
 Orange juice,Veg,45,0.2,0.7,0.2,10,0.2,8.4,Breakfast,2
-Greek yogurt plain,Veg,73,1.9,10,0.04,3.9,0,3.6,"Breakfast, Snack",40
 Oat Bran Cooked,Veg,40,0.9,3.2,0.88,11,2.6,0,Breakfast,1
 Green Tea,Veg,1,0,0.2,0.02,0,0,0,Snack,0
 Chia seeds,Veg,486,31,17,7.72,42,34,0,Breakfast,10
@@ -64,10 +63,9 @@ Tea,Veg,1,0,0,0.08,0.2,0,0,Breakfast,5
 Apples,Veg,52,0.2,0.3,0.12,14,24,10,Snack,1
 Strawberries,Veg,32,0.3,0.7,0.41,7.7,2,4.9,Snack,1
 Quinoa,Veg,120,1.9,4.4,1.49,21,2.8,0.9,Lunch,10
-Goat meat,Non-Veg,109,2.3,21,2.83,57,0,0,Dinner,70
+Goat meat,Non-Veg,143,2.3,21,2.83,57,0,0,Dinner,70
 Chicken Strips,Non-Veg,295,15,19,0.72,22,1.1,0.3,Breakfast,800
 Steak Fries,Non-Veg,255,13,3.3,0.69,31,3.5,0.9,Snack,400
-Mexican Rice,Veg,195,4.9,3.6,1.18,34,1.1,1.4,Dinner,300
 Fried Shrimp,Non-Veg,319,20,14,1.54,21,1.5,0.8,Lunch,400
 Spaghetti and meatballs,Non-Veg,170,8.5,7.8,1.29,16,1.5,2,Snack,600
 Macroni n Cheese ,Veg,194,12,6.5,57,16,1.1,2.8,Snack,800
@@ -86,3 +84,4 @@ Strawberry,Veg,192,8.4,3.2,0.21,28,0.9,0,"Lunch, Snack",1
 Marshmallows,Veg,318,0.2,1.8,0.23,81,0.1,58,Snack,50
 Chocolate milk,Veg,535,30,7.7,2.35,59,3.4,52,Snack,100
 Oats Pudding,Veg,376,0.1,2.7,1.79,91,0.7,0,Breakfast,50
+3 Piece Roti,Veg,297,7.5,11,3.01,46,4.9,2.7,Dinner,150
