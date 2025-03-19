@@ -12,139 +12,91 @@ def get_output():
     user_weight = weight_entry.get()
     user_bmi_text = bmi_label.cget("text")
     user_diet_type = diet_type.get()  # "All", "Veg", or "Non-Veg"
-    user_diet_preference = (
-        diet_type_preference.get()
-    )  # e.g., "High-Protein", "Low-Carbs", etc.
+    user_diet_preference = diet_type_preference.get()  # "High-Protein", "Keto", "None"
     user_health_condition = (
         diet_type_health_conditions.get()
-    )  # e.g., "None", "Hypertension", etc.
+    )  # "None", "Diabetes", etc.
     user_diet_goal = (
         selected_goal if selected_goal else "None"
     )  # "Weight Loss", "Muscle Gain", "Healthy"
 
-    # Basic validation: Ensure required fields are not empty.
+    # Validate user input
     if not (user_age and user_height and user_weight and user_bmi_text):
         messagebox.showwarning("Input Error", "Please fill in all the required fields!")
         return
-
+    if int(user_age) > 80 or int(user_age) < 5:
+        messagebox.showwarning("Age Value Error", "Please provide age between 5 and 80")
+        return
+    if int(user_height) > 300 or int(user_height) < 60:
+        messagebox.showwarning(
+            "Height Value Error", "Please provide height ( in cm ) between 60 and 300"
+        )
+        return
+    if int(user_weight) > 500 or int(user_weight) < 30:
+        messagebox.showwarning("Age Value Error", "Please provide age between 5 and 80")
+        return
     try:
-        # Optionally convert BMI text to float (if needed for further calculations)
         user_bmi = float(user_bmi_text)
+        user_weight = float(user_weight)
     except ValueError:
-        user_bmi = None
+        messagebox.showwarning("Input Error", "Invalid numerical values entered!")
+        return
 
-    # Load the food_data.csv file
+    # Load food data
     try:
         df = pd.read_csv("food_data.csv")
     except Exception as e:
         messagebox.showerror("File Error", f"Error reading food_data.csv: {e}")
         return
 
-    # Initialize the meal plan dictionary
-    meal_plan = {"breakfast": [], "lunch": [], "snack": [], "dinner": []}
-
-    # Helper function: Check if a cell's value contains a target (splitting on commas, case-insensitive)
+    # Filtering function
     def contains_value(cell_value, target):
         if pd.isna(cell_value):
             return False
-        parts = [part.strip().lower() for part in str(cell_value).split(",")]
-        return target.lower() in parts
+        return target.lower() in str(cell_value).lower().split(", ")
 
-    # For each meal category, filter food items accordingly
+    # Filter based on Diet Type
+    if user_diet_type != "All":
+        df = df[df["Category"].str.lower() == user_diet_type.lower()]
+
+    # Filter based on Diet Preferences
+    if user_diet_preference == "High-Protein":
+        df = df.sort_values("Protein", ascending=False)  # Prioritize high-protein foods
+    elif user_diet_preference == "Keto":
+        df = df.sort_values(
+            "Carbohydrates", ascending=True
+        )  # Prioritize low-carb foods
+        df = df.sort_values("Fats", ascending=False)  # High-fat for keto
+
+    # Filter based on Health Condition
+    if user_health_condition == "High cholesterol":
+        df = df[(df["Fats"] < 15) & (df["Fibre"] > 2) & (df["Sugar"] < 5)]
+    elif user_health_condition == "Diabetes":
+        df = df[(df["Sugar"] < 5) & (df["Fibre"] > 4)]
+    elif user_health_condition == "Hypertension":
+        df = df[df["Sodium"] < 400]  # Assuming Sodium column exists
+    elif user_health_condition == "Iron Deficiency":
+        df = df[df["Iron"] > 5]
+
+    # Filter based on Diet Goal
+    if user_diet_goal == "Weight Loss":
+        df = df[(df["Calories"] >= 150) & (df["Calories"] <= 400)]
+        df = df.sort_values(["Fibre", "Protein"], ascending=[False, False])
+    elif user_diet_goal == "Muscle Gain":
+        df = df[df["Calories"] >= 200]
+        df = df.sort_values(["Protein", "Fats"], ascending=[False, False])
+        # if user_bmi < 18.5:  # Underweight: prioritize higher calories
+        #         df_meal = df_meal[df_meal["Calories"] > 500]
+    elif user_diet_goal == "Healthy":
+        df = df[(df["Calories"] > 250) & (df["Calories"] < 600)]
+        df = df.sort_values(["Fibre", "Protein"], ascending=[False, False])
+
+    # Create meal plan dictionary
+    meal_plan = {"breakfast": [], "lunch": [], "snack": [], "dinner": []}
+
     for meal in meal_plan.keys():
-        # Filter rows where "Meal Type" contains the current meal or "Any"
         df_meal = df[df["Meal Type"].apply(lambda x: contains_value(x, meal))]
-
-        # Filter by Diet Type: if user selects "All", include both Veg and Non-Veg; otherwise, filter accordingly.
-        if user_diet_type == "All":
-            # No filtering; recommendations will include items from both Veg and Non-Veg categories.
-            pass
-        else:
-            df_meal = df_meal[df_meal["Category"].str.lower() == user_diet_type.lower()]
-
-        if user_diet_preference == "None":
-            pass
-        else:
-            df_meal = df_meal[
-                df_meal["Diet Preferences"].apply(
-                    lambda x: contains_value(x, user_diet_preference)
-                )
-            ]
-        # //////////////////
-        # Filter by Health Condition if a specific condition is chosen (i.e., not "None")
-        if user_health_condition != "None":
-            df_meal = df_meal[
-                df_meal["Health Conditions"].apply(
-                    lambda x: contains_value(x, user_health_condition)
-                )
-            ]
-        # ////////////////////////
-        if user_diet_goal == "Weight Loss":
-            # Filter out high-calorie foods but avoid extremely low-calorie ones
-            df_meal = df_meal[
-                (df_meal["Calories"] >= 200) & (df_meal["Calories"] <= 400)
-            ]
-
-            # Prioritize high-protein foods
-            df_meal = df_meal.sort_values("Protein", ascending=False)
-
-            # Filter out foods with high sugar
-            df_meal = df_meal[df_meal["Sugar"] < 10]
-
-            # Prioritize high-fiber foods
-            df_meal = df_meal.sort_values("Fibre", ascending=False)
-
-            # Filter medium-fat foods (avoid too high or too low)
-            df_meal = df_meal[(df_meal["Fats"] >= 5) & (df_meal["Fats"] <= 20)]
-
-            # Filter medium iron foods
-            df_meal = df_meal[(df_meal["Iron"] >= 3) & (df_meal["Iron"] <= 10)]
-
-            # Prioritize complex carbs (avoid refined)
-            df_meal = df_meal.sort_values("Carbohydrates", ascending=True)
-
-        elif user_diet_goal == "Muscle Gain":
-            # Prioritize high-calorie foods (surplus for muscle growth)
-            df_meal = df_meal[df_meal["Calories"] >= 400]
-
-            # Sort by high-protein content
-            df_meal = df_meal.sort_values("Protein", ascending=False)
-
-            # Prioritize high-fat foods (for energy density)
-            df_meal = df_meal.sort_values("Fats", ascending=False)
-
-            # Keep iron levels in a moderate range
-            df_meal = df_meal[(df_meal["Iron"] >= 3) & (df_meal["Iron"] <= 10)]
-
-            # Prioritize high-carb foods for energy
-            df_meal = df_meal.sort_values("Carbohydrates", ascending=False)
-
-            # Ensure fibre is in a moderate range
-            df_meal = df_meal[(df_meal["Fibre"] >= 3) & (df_meal["Fibre"] <= 8)]
-
-            # Allow moderate sugar for quick energy
-            df_meal = df_meal[(df_meal["Sugar"] >= 5) & (df_meal["Sugar"] <= 20)]
-
-            # If BMI < 18.5 (underweight), recommend higher-calorie protein foods
-            if user_bmi < 18.5:
-                df_meal = df_meal[df_meal["Calories"] > 350]
-
-        elif user_diet_goal == "Healthy":
-            # Prioritize a balanced meal: moderate Calories, high Fiber, and essential nutrients
-            df_meal = df_meal.sort_values(
-                ["Fibre", "Protein", "Calories"], ascending=[False, True, True]
-            )
-
-            # Exclude extreme values (very high-calorie or very low-fiber meals)
-            df_meal = df_meal[(df_meal["Calories"] > 250) & (df_meal["Calories"] < 600)]
-
-            # Optional: Filter out foods high in added sugar or processed foods if available
-            if "Sugar" in df_meal.columns:
-                df_meal = df_meal[df_meal["Sugar"] < 10]
-
-        # Select top 3 food items for the meal
-        recommended_foods = df_meal["Food_items"].head(4).tolist()
-        meal_plan[meal] = recommended_foods
+        meal_plan[meal] = df_meal["Food_items"].head(4).tolist()
 
     def show_output_popup():
         output_window = tk.Toplevel(root, bg=app_bg)
@@ -391,25 +343,27 @@ root.bind("<Configure>", resize_bg)
 
 
 # validating the user input
-def validate_input(new_value, field):
-    """Validate user input based on the given field type."""
-    if new_value == "":  # Allow empty field (for deletion)
-        return True
-    try:
-        value = float(new_value)
-        if field == "age" and (0 <= value <= 100):
-            return True
-        elif field in ["height", "weight"] and (0 <= value <= 500):
-            return True
-    except ValueError:
-        return False  # Reject non-numeric input
+# def validate_input(new_value, field):
+#     """Validate user input based on the given field type."""
+#     if new_value == "":  # Allow empty field (for deletion)
+#         return True
+#     try:
+#         value = float(new_value)
+#         if field == "age" and (0 <= value <= 100):
+#             return True
+#         elif field in ["height"] and (0 <= value <= 500):
+#             return True
+#         elif field in ["weight"] and (0 <= value <= 500):
+#             return True
+#     except ValueError:
+#         return False  # Reject non-numeric input
 
-    return False  # Reject values outside the range
+#     return False  # Reject values outside the range
 
 
-validate_age = root.register(lambda new_value: validate_input(new_value, "age"))
-validate_height = root.register(lambda new_value: validate_input(new_value, "height"))
-validate_weight = root.register(lambda new_value: validate_input(new_value, "weight"))
+# validate_age = root.register(lambda new_value: validate_input(new_value, "age"))
+# validate_height = root.register(lambda new_value: validate_input(new_value, "height"))
+# validate_weight = root.register(lambda new_value: validate_input(new_value, "weight"))
 
 
 # GUI ka starting
@@ -449,7 +403,7 @@ age_entry = tk.Entry(
     font=(app_font_family, app_font_size),
     bg="white",
     validate="key",
-    validatecommand=(validate_age, "%P"),
+    # validatecommand=(validate_age, "%P"),
     border=0,
 )
 age_entry.place(x=x_value, y=203)
@@ -489,7 +443,7 @@ height_entry = tk.Entry(
     root,
     font=(app_font_family, app_font_size),
     validate="key",
-    validatecommand=(validate_height, "%P"),
+    # validatecommand=(validate_height, "%P"),
     border=0,
 )
 height_entry.place(x=x_value, y=280)
@@ -529,7 +483,7 @@ weight_entry = tk.Entry(
     root,
     font=(app_font_family, app_font_size),
     validate="key",
-    validatecommand=(validate_weight, "%P"),
+    # validatecommand=(validate_weight, "%P"),
     border=0,
 )
 weight_entry.place(x=x_value, y=363)

@@ -12,12 +12,10 @@ def get_output():
     user_weight = weight_entry.get()
     user_bmi_text = bmi_label.cget("text")
     user_diet_type = diet_type.get()  # "All", "Veg", or "Non-Veg"
-    user_diet_preference = (
-        diet_type_preference.get()
-    )  # e.g., "High-Protein", "Low-Carbs", etc.
+    user_diet_preference = diet_type_preference.get()  # "High-Protein", "Keto", "None"
     user_health_condition = (
         diet_type_health_conditions.get()
-    )  # e.g., "None", "Hypertension", etc.
+    )  # "None", "High cholesterol", "Diabetes", etc.
     user_diet_goal = (
         selected_goal if selected_goal else "None"
     )  # "Weight Loss", "Muscle Gain", "Healthy"
@@ -28,7 +26,7 @@ def get_output():
         return
 
     try:
-        # Optionally convert BMI text to float (if needed for further calculations)
+        # Convert BMI text to float
         user_bmi = float(user_bmi_text)
     except ValueError:
         user_bmi = None
@@ -56,94 +54,61 @@ def get_output():
         df_meal = df[df["Meal Type"].apply(lambda x: contains_value(x, meal))]
 
         # Filter by Diet Type: if user selects "All", include both Veg and Non-Veg; otherwise, filter accordingly.
-        if user_diet_type == "All":
-            # No filtering; recommendations will include items from both Veg and Non-Veg categories.
-            pass
-        else:
+        if user_diet_type != "All":
             df_meal = df_meal[df_meal["Category"].str.lower() == user_diet_type.lower()]
 
-        if user_diet_preference == "None":
-            pass
-        else:
-            df_meal = df_meal[
-                df_meal["Diet Preferences"].apply(
-                    lambda x: contains_value(x, user_diet_preference)
-                )
-            ]
-        # //////////////////
-        # Filter by Health Condition if a specific condition is chosen (i.e., not "None")
+        # Filter by Diet Preference
+        if user_diet_preference == "High-Protein":
+            df_meal = df_meal.sort_values("Protein", ascending=False)
+        elif user_diet_preference == "Keto":
+            df_meal = df_meal[df_meal["Carbohydrates"] < 10]  # Low-carb for keto
+            df_meal = df_meal.sort_values("Fats", ascending=False)  # High-fat for keto
+
+        # Filter by Health Condition
         if user_health_condition != "None":
-            df_meal = df_meal[
-                df_meal["Health Conditions"].apply(
-                    lambda x: contains_value(x, user_health_condition)
-                )
-            ]
-        # ////////////////////////
+            if user_health_condition == "High cholesterol":
+                df_meal = df_meal[
+                    (df_meal["Fats"] < 15)
+                    & (df_meal["Fibre"] > 3)
+                    & (df_meal["Sugar"] < 6)
+                ]
+            elif user_health_condition == "Diabetes":
+                df_meal = df_meal[(df_meal["Sugar"] < 5) & (df_meal["Fibre"] >= 3)]
+            elif user_health_condition == "Hypertension":
+                df_meal = df_meal[
+                    (df_meal["Sodium"] < 500)
+                ]  # Assuming Sodium column exists
+            elif user_health_condition == "Iron Deficiency":
+                df_meal = df_meal[df_meal["Iron"] > 5]
+
+        # Filter by Diet Goal
         if user_diet_goal == "Weight Loss":
-            # Filter out high-calorie foods but avoid extremely low-calorie ones
             df_meal = df_meal[
                 (df_meal["Calories"] >= 200) & (df_meal["Calories"] <= 400)
             ]
-
-            # Prioritize high-protein foods
-            df_meal = df_meal.sort_values("Protein", ascending=False)
-
-            # Filter out foods with high sugar
-            df_meal = df_meal[df_meal["Sugar"] < 10]
-
-            # Prioritize high-fiber foods
-            df_meal = df_meal.sort_values("Fibre", ascending=False)
-
-            # Filter medium-fat foods (avoid too high or too low)
-            df_meal = df_meal[(df_meal["Fats"] >= 5) & (df_meal["Fats"] <= 20)]
-
-            # Filter medium iron foods
-            df_meal = df_meal[(df_meal["Iron"] >= 3) & (df_meal["Iron"] <= 10)]
-
-            # Prioritize complex carbs (avoid refined)
-            df_meal = df_meal.sort_values("Carbohydrates", ascending=True)
-
-        elif user_diet_goal == "Muscle Gain":
-            # Prioritize high-calorie foods (surplus for muscle growth)
-            df_meal = df_meal[df_meal["Calories"] >= 400]
-
-            # Sort by high-protein content
-            df_meal = df_meal.sort_values("Protein", ascending=False)
-
-            # Prioritize high-fat foods (for energy density)
-            df_meal = df_meal.sort_values("Fats", ascending=False)
-
-            # Keep iron levels in a moderate range
-            df_meal = df_meal[(df_meal["Iron"] >= 3) & (df_meal["Iron"] <= 10)]
-
-            # Prioritize high-carb foods for energy
-            df_meal = df_meal.sort_values("Carbohydrates", ascending=False)
-
-            # Ensure fibre is in a moderate range
-            df_meal = df_meal[(df_meal["Fibre"] >= 3) & (df_meal["Fibre"] <= 8)]
-
-            # Allow moderate sugar for quick energy
-            df_meal = df_meal[(df_meal["Sugar"] >= 5) & (df_meal["Sugar"] <= 20)]
-
-            # If BMI < 18.5 (underweight), recommend higher-calorie protein foods
-            if user_bmi < 18.5:
-                df_meal = df_meal[df_meal["Calories"] > 350]
-
-        elif user_diet_goal == "Healthy":
-            # Prioritize a balanced meal: moderate Calories, high Fiber, and essential nutrients
             df_meal = df_meal.sort_values(
-                ["Fibre", "Protein", "Calories"], ascending=[False, True, True]
+                ["Protein", "Fibre"], ascending=[False, False]
+            )
+            df_meal = df_meal[
+                (df_meal["Sugar"] < 10)
+                & (df_meal["Fats"] >= 5)
+                & (df_meal["Fats"] <= 20)
+            ]
+        elif user_diet_goal == "Muscle Gain":
+            df_meal = df_meal[df_meal["Calories"] >= 200]
+            df_meal = df_meal.sort_values(
+                ["Protein", "Fats", "Carbohydrates"], ascending=[False, False, False]
+            )
+            if user_bmi < 18.5:  # Underweight: prioritize higher calories
+                df_meal = df_meal[df_meal["Calories"] > 500]
+        elif user_diet_goal == "Healthy":
+            df_meal = df_meal[(df_meal["Calories"] > 250) & (df_meal["Calories"] < 600)]
+            df_meal = df_meal.sort_values(
+                ["Fibre", "Protein"], ascending=[False, False]
             )
 
-            # Exclude extreme values (very high-calorie or very low-fiber meals)
-            df_meal = df_meal[(df_meal["Calories"] > 250) & (df_meal["Calories"] < 600)]
-
-            # Optional: Filter out foods high in added sugar or processed foods if available
-            if "Sugar" in df_meal.columns:
-                df_meal = df_meal[df_meal["Sugar"] < 10]
-
         # Select top 3 food items for the meal
-        recommended_foods = df_meal["Food_items"].head(4).tolist()
+        recommended_foods = df_meal["Food_items"].head(3).tolist()
         meal_plan[meal] = recommended_foods
 
     def show_output_popup():
