@@ -105,7 +105,7 @@ def get_output():
 
         # elif user_diet_goal == "Muscle Gain":
         #     # Sort by high Protein (muscle-building priority)
-        #     df_meal = df_meal.sort_values("Protein (g)", ascending=False)
+        #     df_meal = df_meal.sort_values("Protein", ascending=False)
 
         #     # If BMI < 18.5 (underweight), recommend higher-calorie protein foods
         #     if user_bmi < 18.5:
@@ -129,7 +129,7 @@ def get_output():
 
         elif user_diet_goal == "Muscle Gain":
             # Prioritize Protein for muscle gain
-            df_meal = df_meal.sort_values("Protein (g)", ascending=False)
+            df_meal = df_meal.sort_values("Protein", ascending=False)
 
             # If BMI < 18.5 (underweight), recommend higher-calorie protein foods
             if user_bmi < 18.5:
@@ -138,7 +138,7 @@ def get_output():
         elif user_diet_goal == "Healthy":
             # Prioritize a balanced meal: moderate Calories, high Fiber, and essential nutrients
             df_meal = df_meal.sort_values(
-                ["Fibre", "Protein (g)", "Calories"], ascending=[False, True, True]
+                ["Fibre", "Protein", "Calories"], ascending=[False, True, True]
             )
 
             # Exclude extreme values (very high-calorie or very low-fiber meals)
@@ -149,7 +149,7 @@ def get_output():
                 df_meal = df_meal[df_meal["Sugar"] < 10]
 
         # Select top 3 food items for the meal
-        recommended_foods = df_meal["Food_items"].head(6).tolist()
+        recommended_foods = df_meal["Food_items"].head(4).tolist()
         meal_plan[meal] = recommended_foods
 
     # Print the output dictionary to the console and show it via a messagebox
